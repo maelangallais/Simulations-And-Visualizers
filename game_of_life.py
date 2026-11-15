@@ -101,6 +101,7 @@ def cns(): #Calculate New States
         for x in range(len(st[0])):
           fill_rect(sw+a*(t+1)*m+x*m,sh+b*(t+1)*m+y*m,m,m,c[st[y][x]])
     cts.append(rct)
+  #AI-made from here :
   crn=[]
   for b in range(th):
     for a in range(tw):
