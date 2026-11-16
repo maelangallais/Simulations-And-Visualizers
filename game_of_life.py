@@ -5,9 +5,10 @@ from time import sleep
 from ion import keydown
 
 c=[(255,)*3,(0,)*3]
+uc=[(255,180,180),(255,75,75)]
 
 #Minimal's value for resolution (m) is now 2 instead of 4 on a Numworks calculator
-m=6
+m=5
 w,h=320//m,222//m
 sw,sh=320%m,222%m
 
@@ -98,8 +99,13 @@ def cns(): #Calculate New States
       rct.append(ct)
       st=gsft(st)
       for y in range(len(st)):
+        sc,sx=0,0
         for x in range(len(st[0])):
-          fill_rect(sw+a*(t+1)*m+x*m,sh+b*(t+1)*m+y*m,m,m,c[st[y][x]])
+          val=st[y][x]
+          if val!=sc:
+            fill_rect(sw+a*(t+1)*m+sx*m,sh+b*(t+1)*m+y*m,(x-sx)*m,m,c[sc])
+            sc,sx=val,x
+        fill_rect(sw+a*(t+1)*m+sx*m,sh+b*(t+1)*m+y*m,(len(st[0])-sx)*m,m,c[sc])
     cts.append(rct)
   #AI-made from here :
   crn=[]
@@ -149,6 +155,32 @@ def init_form(x,y,ta):
 init_form(17,17,glider)
 init_form(30,8,lightweight_spaceship)
 init_form(3,23,koks_galaxy)
+
+edit,new=False,True
+lb=[0,0,gp(0,0)]
+ux,uy=0,0
 while True:
-  cns()
+  if keydown(12):
+    edit=not edit
+    new=True
+    if edit:
+      lb=[ux,uy,gp(ux,uy)]
+      fill_rect(sw+ux*m,sh+uy*m,m,m,uc[lb[2]])
+    else:
+      fill_rect(sw+lb[0]*m,sh+lb[1]*m,m,m,c[lb[2]])
+    sleep(0.5)
+  if edit:
+    if new:
+      fill_rect(sw+lb[0]*m,sh+lb[1]*m,m,m,c[lb[2]])
+      lb=[ux,uy,gp(ux,uy)]
+      fill_rect(sw+ux*m,sh+uy*m,m,m,uc[lb[2]])
+      new=False
+      sleep(0.2)
+    if keydown(0):ux=(ux-1)%w;new=True
+    elif keydown(3):ux=(ux+1)%w;new=True
+    if keydown(1):uy=(uy-1)%h;new=True
+    elif keydown(2):uy=(uy+1)%h;new=True
+    if keydown(4)or keydown(52):lb[2]=1-lb[2];new=True
+  else:
+    cns()
   #sleep(0.1)
